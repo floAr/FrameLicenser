@@ -58,6 +58,26 @@ export const frameLicenseAbi = [
   },
   {
     type: 'function',
+    inputs: [
+      { name: '_uniqueId', internalType: 'uint256', type: 'uint256' },
+      { name: 'requester', internalType: 'address', type: 'address' },
+    ],
+    name: 'hasLicense',
+    outputs: [{ name: '', internalType: 'bool', type: 'bool' }],
+    stateMutability: 'view',
+  },
+  {
+    type: 'function',
+    inputs: [
+      { name: '_uniqueId', internalType: 'uint256', type: 'uint256' },
+      { name: 'receiver', internalType: 'address', type: 'address' },
+    ],
+    name: 'licenseFrame',
+    outputs: [],
+    stateMutability: 'payable',
+  },
+  {
+    type: 'function',
     inputs: [{ name: '_uniqueId', internalType: 'uint256', type: 'uint256' }],
     name: 'licenseFrame',
     outputs: [],

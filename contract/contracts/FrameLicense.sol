@@ -19,6 +19,7 @@ contract FrameLicense {
         // generate new uniqueid
         uint256 _uniqueId = uint256(keccak256(abi.encodePacked(msg.sender, block.timestamp)));
         require(frames[_uniqueId].uniqueId == 0, "Frame already exists");
+        require(msg.value>0,"Must provide a non zero price");
         // extract value from msg.value
         uint256 _price = msg.value;
 
@@ -54,6 +55,16 @@ contract FrameLicense {
         frames[_uniqueId].hasLicense[msg.sender] = true;
     }
 
+        function licenseFrame(uint256 _uniqueId, address receiver) public payable {
+        require(frames[_uniqueId].uniqueId != 0, "Frame does not exist");
+        require(frames[_uniqueId].owner != receiver, "You cannot license your own frame");
+        require(frames[_uniqueId].price == msg.value, "Incorrect value");
+
+        // send value to owner
+        payable(frames[_uniqueId].owner).transfer(msg.value);
+        frames[_uniqueId].hasLicense[receiver] = true;
+    }
+
     function hasLicense(uint256 _uniqueId) public view returns (bool){
         require(frames[_uniqueId].uniqueId != 0, "Frame does not exist");
         // if owner return true
@@ -61,6 +72,15 @@ contract FrameLicense {
             return true;
         }
         return frames[_uniqueId].hasLicense[msg.sender];
+    }
+
+       function hasLicense(uint256 _uniqueId, address requester) public view returns (bool){
+        require(frames[_uniqueId].uniqueId != 0, "Frame does not exist");
+        // if owner return true
+        if(frames[_uniqueId].owner == requester){
+            return true;
+        }
+        return frames[_uniqueId].hasLicense[requester];
     }
     
 // user  ------------------------------------------------------------------------------------------------
