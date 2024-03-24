@@ -61,10 +61,12 @@ const handleRequest = frames(async (ctx) => {
     });
   }
 
+  console.log(oc);
   var frameState = "INITIAL" as FrameState;
   if (oc.address) {
     try {
-      const hasLicense = await frameLicenser.read.hasLicense([ctx.state.frameId]) as boolean;
+      const hasLicense = await frameLicenser.read!.hasLicense!([ctx.state.frameId, oc.address]) as boolean;
+      console.log(hasLicense);
       frameState = hasLicense ? "GOOD" : "STOLEN";
     } catch (error) {
       console.error(error);
@@ -88,6 +90,25 @@ const handleRequest = frames(async (ctx) => {
     };
   }
 
+  if (frameState === "INITIAL") {
+    return {
+      image: "https://i.imgur.com/Xyo8Per.png",
+
+      imageOptions: {
+        aspectRatio: "1.91:1",
+      },
+      buttons: [
+        <Button
+          action="post"
+        >
+          ⏩
+        </Button>,
+      ],
+    };
+  }
+
+
+
   if (frameState === "STOLEN") {
     return {
       image: "https://i.imgur.com/aNcNUvs.gif",
@@ -96,10 +117,10 @@ const handleRequest = frames(async (ctx) => {
       },
       buttons: [
         <Button
-          action="post"
-          target="/frames"
-          key="enter"
-        >
+          action="tx"
+          target="/registerFrame"
+          post_url="/frames">
+
           {`License for ${oc.name}`}
         </Button>,
         <Button
@@ -123,8 +144,14 @@ const handleRequest = frames(async (ctx) => {
       },
       buttons: [
         <Button
+          action="post"
+          target="/frames"
+        >
+          Refresh
+        </Button>,
+        <Button
           action="link"
-          target={`https://www.onceupon.gg/tx/${ctx.message.transactionId}`}
+          target={`https://basescan.org/tx/${ctx.message.transactionId}`}
         >
           View on block explorer
         </Button>,

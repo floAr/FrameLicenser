@@ -32,31 +32,6 @@ export async function POST(
         args: undefined
     });
 
-    const publicClient = createPublicClient({
-        chain: baseSepolia,
-        transport: http(),
-    });
-
-
-
-
-
-    const frameLicenser = getContract({
-        abi: frameLicenseAbi as Abi,
-        address: "0x4618ad2D09363dB42A8d165c7262358B656A9F78",
-        publicClient,
-    });
-
-
-    var hasLicense = false;
-    // store frameid as uint256
-    try {
-        hasLicense = await frameLicenser.read.hasLicense(["64926579729573357917075808397973142163473499830288424366107952811585235496367"]) as boolean;
-    }
-    catch (error) { }
-
-    console.log(hasLicense);
-
     return NextResponse.json({
         chainId: "eip155:" + baseSepolia.id, // OP Mainnet 10
         method: "eth_sendTransaction",
